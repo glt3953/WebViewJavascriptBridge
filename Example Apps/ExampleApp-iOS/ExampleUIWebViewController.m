@@ -15,16 +15,20 @@
 
 @implementation ExampleUIWebViewController
 
+//在页面显示出来之前，注册bridge对象
 - (void)viewWillAppear:(BOOL)animated {
     if (_bridge) { return; }
     
     UIWebView* webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:webView];
     
+    //开启调试信息
     [WebViewJavascriptBridge enableLogging];
     
+    //响应JS通过send发送给OC的消息
     _bridge = [WebViewJavascriptBridge bridgeForWebView:webView];
     
+    //响应JS通过callhandler发送给OC的消息
     [_bridge registerHandler:@"testObjcCallback" handler:^(id data, WVJBResponseCallback responseCallback) {
         NSLog(@"testObjcCallback called: %@", data);
         responseCallback(@"Response from testObjcCallback");
@@ -62,6 +66,14 @@
     reloadButton.titleLabel.font = font;
 }
 
+//OC调用send给JS发消息
+//- (void)sendMessage:(id)sender {
+//    [_bridge send:@"A string sent from ObjC to JS" responseCallback:^(id response) {
+//        NSLog(@"sendMessage got response: %@", response);
+//    }];
+//}
+
+//OC调用callHandler给JS发消息
 - (void)callHandler:(id)sender {
     id data = @{ @"greetingFromObjC": @"Hi there, JS!" };
     [_bridge callHandler:@"testJavascriptHandler" data:data responseCallback:^(id response) {
