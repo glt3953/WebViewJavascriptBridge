@@ -29,9 +29,13 @@
     _bridge = [WebViewJavascriptBridge bridgeForWebView:webView];
     
     //响应JS通过callhandler发送给OC的消息
-    [_bridge registerHandler:@"testObjcCallback" handler:^(id data, WVJBResponseCallback responseCallback) {
-        NSLog(@"testObjcCallback called: %@", data);
-        responseCallback(@"Response from testObjcCallback");
+    [_bridge registerHandler:@"testObjcCallback By 107room" handler:^(id data, WVJBResponseCallback responseCallback) {
+        NSLog(@"testObjcCallback By 107room called: %@", data);
+        if ([data[@"funName"] isEqualToString:@"isIn107RoomApp"]) {
+            responseCallback(@"Response from testObjcCallback:true");
+        } else if ([data[@"funName"] isEqualToString:@"getPlatform"]) {
+            responseCallback(@"Response from testObjcCallback:ios");
+        }
     }];
     
     [_bridge callHandler:@"testJavascriptHandler" data:@{ @"foo":@"before ready" }];
